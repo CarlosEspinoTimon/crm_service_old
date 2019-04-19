@@ -1,0 +1,36 @@
+version: '3'
+services:
+  crm_backend:
+    build: ./backend/
+    ports:
+     - "5000:5000"
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app
+    networks:
+      dev:
+        ipv4_address: 10.1.0.101
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'crm_db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'root_super_password'
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./crm_db:/var/lib/mysql
+    networks:
+      dev:
+        ipv4_address: 10.1.0.102
+    
+networks:
+  dev:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.1.0.0/24

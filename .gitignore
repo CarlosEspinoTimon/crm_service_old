@@ -1,0 +1,8 @@
+# PYC files
+*/*.pyc
+
+# Environment file
+.env
+
+# DB
+crm_db/
