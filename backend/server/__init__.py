@@ -26,21 +26,22 @@ def create_app(app_config='config.Config'):
     app.config['SQLALCHEMY_DATABASE_URI'] = app.config['DATABASE_URI']
     db = SQLAlchemy(app)
     app.db = db
-    
+
     app.engine = create_engine(app.config['DATABASE_URI'], pool_pre_ping=True)
     app.metadata = MetaData(bind=app.engine)
     app.Session = sessionmaker(bind=app.engine)
 
     # A simple page that says server status
-    @app.route('/server-status/')
+    @app.route('/')
     @cross_origin() 
     def home():
-        return jsonify('The server is running!!')
+        sess = app.Session()
+        users_table = Table('customers', app.metadata, autoload=True)
 
-    
-    # Import the blueprints
-    from .users import users
-    app.register_blueprint(users.bp)
+        stmt = users_table.select()
+        res = [{k:v for k,v in row.items()} for row in sess.execute(stmt)]
+
+        return jsonify('Server running and connected to db: {}'.format(res))
 
     
    
