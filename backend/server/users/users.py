@@ -3,6 +3,8 @@ from flask_cors import CORS, cross_origin
 
 from sqlalchemy import create_engine, MetaData, Table, asc, desc, and_
 
+from server.models.user import User
+
 
 bp = Blueprint('users', __name__, url_prefix='/')
 CORS(bp, max_age=30*86400)
@@ -12,7 +14,7 @@ def get_all_customers():
     try:
         users_table = Table('customers', current_app.metadata, autoload=True)
         res = users_table.select().execute()
-        users = [{k:v for k,v in row.items()} for row in res]
+        users = [User({k:v for k,v in row.items()}).__str__() for row in res]
     except Exception as e:
         # TODO catch the error to ignore database errors
         print("ERROR: ", e)
@@ -25,12 +27,12 @@ def get_customer(id):
     try:
         users_table = Table('customers', current_app.metadata, autoload=True)
         res = users_table.select(users_table.c.id == id).execute().first()
-        user = {k:v for k,v in res.items()}
+        user = User({k:v for k,v in res.items()})
     except Exception as e:
         # TODO catch the error to ignore database errors
         print("ERROR: ", e)
         abort(406, 'There has been an error in the server')
-    return jsonify(user), 200
+    return jsonify(user.__str__()), 200
 
 
 @bp.route('/customer', methods=['POST'])
