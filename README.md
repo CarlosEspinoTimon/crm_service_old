@@ -8,6 +8,7 @@ To start developing in this project, you just have to clone the repository, meet
 You need to install:
 - docker-compose 
 - docker
+
 Also, you need to create a .env file in the `backend` directory with some variables:
 ```
 FLASK_APP=server:create_app('config.Dev')
