@@ -1,9 +1,11 @@
-from flask import Blueprint, jsonify, request, abort, current_app
+from flask import Blueprint, jsonify, request, abort
 from flask_cors import CORS, cross_origin
 
-from sqlalchemy import create_engine, MetaData, Table, asc, desc, and_
+from server.models.customer import Customer
 
-from server.models.user import User
+from server.helpers.db_helper import get_table, get_session
+
+from .helper import create_customer, update_customer, delete_customer_by_id
 
 
 bp = Blueprint('users', __name__, url_prefix='/')
@@ -11,41 +13,95 @@ CORS(bp, max_age=30*86400)
 
 @bp.route('/customers', methods=['GET'])
 def get_all_customers():
+    '''
+    Function that returns all the customers.
+    :return customers: All the customers.
+    :rtype: list of Customers.
+    '''
     try:
-        users_table = Table('customers', current_app.metadata, autoload=True)
-        res = users_table.select().execute()
-        users = [User({k:v for k,v in row.items()}).__str__() for row in res]
+        cust_table = get_table('customers')
+        res = cust_table.select().execute()
+        customers = [Customer({k:v for k,v in row.items()}).__str__() \
+                                    for row in res]
     except Exception as e:
         # TODO catch the error to ignore database errors
         print("ERROR: ", e)
         abort(406, 'There has been an error in the server')
-    return jsonify(users), 200
+    return jsonify(customers), 200
 
 
 @bp.route('/customer/<int:id>', methods=['GET'])
 def get_customer(id):
+    '''
+    Function that given an id it returns the customer.
+    :param int id: the id of the customer.
+    :return customer: The customer.
+    :rtype: Customer.
+    '''
     try:
-        users_table = Table('customers', current_app.metadata, autoload=True)
-        res = users_table.select(users_table.c.id == id).execute().first()
-        user = User({k:v for k,v in res.items()})
+        customer = get_customer(id)
     except Exception as e:
         # TODO catch the error to ignore database errors
         print("ERROR: ", e)
         abort(406, 'There has been an error in the server')
-    return jsonify(user.__str__()), 200
+    return jsonify(customer.__str__()), 200
 
 
 @bp.route('/customer', methods=['POST'])
 def post_customer():
-    return jsonify('Create user endpoint'), 501
+    '''
+    Function that given the customer data it creates it.
+    :param dict data: the data of the customer sent in the body of the request.
+    :return customer: The customer.
+    :rtype: Customer.
+    '''
+    try:
+        data = request.get_json()
+        sess = get_session()
+        customer = create_customer(sess, data, 'user_id')
+        sess.commit()
+    except Exception as e:
+        # TODO catch the error to ignore database errors
+        sess.rollback()
+        print("ERROR: ", e)
+        abort(406, 'There has been an error in the server')
+    return jsonify(customer.__str__()), 201
 
 
 @bp.route('/customer/<int:id>', methods=['PUT'])
 def put_customer(id):
-    return jsonify('Update user endpoint'), 501
+    '''
+    Function that given the customer data and its id it updates it.
+    :param int id: the id of the customer.
+    :param dict data: the data of the customer sent in the body of the request.
+    '''
+    try:
+        data = request.get_json()
+        sess = get_session()
+        update_customer(sess, id, data, 'user_id_3')
+        sess.commit()
+    except Exception as e:
+        # TODO catch the error to ignore database errors
+        sess.rollback()
+        print("ERROR: ", e)
+        abort(406, 'There has been an error in the server')
+    return jsonify('Customer updated'), 200
 
 
 @bp.route('/customer/<int:id>', methods=['DELETE'])
 def delete_customer(id):
-    return jsonify('Delete user endpoint'), 501
+    '''
+    Function that given the customer id it deletes it.
+    :param int id: the id of the customer.
+    '''
+    try:
+        sess = get_session()
+        delete_customer_by_id(sess, id)
+        sess.commit()
+    except Exception as e:
+        # TODO catch the error to ignore database errors
+        sess.rollback()
+        print("ERROR: ", e)
+        abort(406, 'There has been an error in the server')
+    return jsonify('Customer deleted'), 200
 
