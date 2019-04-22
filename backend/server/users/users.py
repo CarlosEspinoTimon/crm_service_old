@@ -7,11 +7,14 @@ from server.helpers.db_helper import get_table, get_session
 
 from .helper import create_customer, update_customer, delete_customer_by_id
 
+from server.decorators import check_token
+
 
 bp = Blueprint('users', __name__, url_prefix='/')
 CORS(bp, max_age=30*86400)
 
 @bp.route('/customers', methods=['GET'])
+@check_token
 def get_all_customers():
     '''
     Function that returns all the customers.
