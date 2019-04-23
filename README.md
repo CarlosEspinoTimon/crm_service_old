@@ -18,6 +18,7 @@ PYTHONUNBUFFERED=1
 GOOGLE_LOGIN_CLIENT_ID=YOUR_CLIENT_ID
 GOOGLE_LOGIN_CLIENT_SECRET=YOUR_CLIENT_SECRET
 ```
+The DATABASE_URI is just for production, the config.Dev file configures by default the URI to the local database of the docker-compose
 ### Run the server
 The server runs by default in development mode. To start it, you have to run:
 
