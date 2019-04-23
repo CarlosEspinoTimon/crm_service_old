@@ -10,10 +10,10 @@ from .helper import create_customer, update_customer, delete_customer_by_id
 from server.decorators import check_token
 
 
-bp = Blueprint('users', __name__, url_prefix='/')
-CORS(bp, max_age=30*86400)
+users = Blueprint('users', __name__, url_prefix='/')
+CORS(users, max_age=30*86400)
 
-@bp.route('/customers', methods=['GET'])
+@users.route('/customers', methods=['GET'])
 @check_token
 def get_all_customers():
     '''
@@ -33,7 +33,7 @@ def get_all_customers():
     return jsonify(customers), 200
 
 
-@bp.route('/customer/<int:id>', methods=['GET'])
+@users.route('/customer/<int:id>', methods=['GET'])
 def get_customer(id):
     '''
     Function that given an id it returns the customer.
@@ -50,7 +50,7 @@ def get_customer(id):
     return jsonify(customer.__str__()), 200
 
 
-@bp.route('/customer', methods=['POST'])
+@users.route('/customer', methods=['POST'])
 def post_customer():
     '''
     Function that given the customer data it creates it.
@@ -71,7 +71,7 @@ def post_customer():
     return jsonify(customer.__str__()), 201
 
 
-@bp.route('/customer/<int:id>', methods=['PUT'])
+@users.route('/customer/<int:id>', methods=['PUT'])
 def put_customer(id):
     '''
     Function that given the customer data and its id it updates it.
@@ -91,7 +91,7 @@ def put_customer(id):
     return jsonify('Customer updated'), 200
 
 
-@bp.route('/customer/<int:id>', methods=['DELETE'])
+@users.route('/customer/<int:id>', methods=['DELETE'])
 def delete_customer(id):
     '''
     Function that given the customer id it deletes it.

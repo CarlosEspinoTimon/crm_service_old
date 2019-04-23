@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, jsonify, g, redirect, url_for, render_template, request
+from flask import Flask, jsonify, g, redirect, url_for, request
 from flask_cors import CORS, cross_origin
 
 import config
@@ -88,9 +88,11 @@ def create_app(app_config='config.Config'):
     
     # Import the blueprints
     from .users import users
-    app.register_blueprint(users.bp)
-    from .oauth import oauth
-    app.register_blueprint(oauth.bp)
+    app.register_blueprint(users.users)
+    # from .oauth import oauth
+    # app.register_blueprint(oauth.bp)
+    from .auth import auth
+    app.register_blueprint(auth.auth)
 
     
 
@@ -101,45 +103,45 @@ def create_app(app_config='config.Config'):
     #     return User({k:v for k, v in res.items()})
             
 
-    from .auth import OAuthSignIn
+    # from .auth import OAuthSignIn
 
-    @app.route('/authorize/<provider>')
-    def oauth_authorize(provider):
-        # Flask-Login function
-        # if not current_user.is_anonymous:
-        #     return redirect(url_for('index'))
-        oauth = OAuthSignIn.get_provider(provider)
-        return oauth.authorize()
+    # @app.route('/authorize/<provider>')
+    # def oauth_authorize(provider):
+    #     # Flask-Login function
+    #     # if not current_user.is_anonymous:
+    #     #     return redirect(url_for('index'))
+    #     oauth = OAuthSignIn.get_provider(provider)
+    #     return oauth.authorize()
 
-    @app.route('/callback/<provider>')
-    def oauth_callback(provider):
-        # if not current_user.is_anonymous:
-        #     return redirect(url_for('index'))
-        oauth = OAuthSignIn.get_provider(provider)
-        email, access_token = oauth.callback()
-        if email is None:
-            # I need a valid email address for my user identification
-            # flash('Authentication failed.')
-            # return redirect(url_for('index'))
-            return jsonify('Authentication failed')
-        # Look if the user already exists
-        user_table = get_table('users')
-        user = user_table.select(user_table.c.email == email).execute().first()
-        if user:
-            return jsonify('Logged in, your access token is: {}'.format(access_token))
-        else:
-            return jsonify('User not registered')
+    # @app.route('/callback/<provider>')
+    # def oauth_callback(provider):
+    #     # if not current_user.is_anonymous:
+    #     #     return redirect(url_for('index'))
+    #     oauth = OAuthSignIn.get_provider(provider)
+    #     email, access_token = oauth.callback()
+    #     if email is None:
+    #         # I need a valid email address for my user identification
+    #         # flash('Authentication failed.')
+    #         # return redirect(url_for('index'))
+    #         return jsonify('Authentication failed')
+    #     # Look if the user already exists
+    #     user_table = get_table('users')
+    #     user = user_table.select(user_table.c.email == email).execute().first()
+    #     if user:
+    #         return jsonify('Logged in, your access token is: {}'.format(access_token))
+    #     else:
+    #         return jsonify('User not registered')
 
 
    
         
 
-    @app.route('/login', methods=['GET', 'POST'])
-    def login():
-        # if g.user is not None and g.user.is_authenticated():
-        #     return redirect(url_for('index'))
-        return render_template('login.html',
-                            title='Sign In')
+    # @app.route('/login', methods=['GET', 'POST'])
+    # def login():
+    #     # if g.user is not None and g.user.is_authenticated():
+    #     #     return redirect(url_for('index'))
+    #     return render_template('login.html',
+    #                         title='Sign In')
     
    
     return app

@@ -20,7 +20,7 @@ class OAuthSignIn(object):
         pass
 
     def get_callback_url(self):
-        return url_for('oauth_callback', provider=self.provider_name,
+        return url_for('auth.oauth_callback', provider=self.provider_name,
                         _external=True)
 
     @classmethod
@@ -35,7 +35,8 @@ class OAuthSignIn(object):
 class GoogleSignIn(OAuthSignIn):
     def __init__(self):
         super(GoogleSignIn, self).__init__('google')
-        googleinfo = urlopen('https://accounts.google.com/.well-known/openid-configuration')
+        url = 'https://accounts.google.com/.well-known/openid-configuration'
+        googleinfo = urlopen(url)
         google_params = json.load(googleinfo)
         self.service = OAuth2Service(
                 name='google',
