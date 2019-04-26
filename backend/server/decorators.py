@@ -11,6 +11,8 @@ def check_token(func):
         import requests
         try:
             token = request.headers.get('access_token')
+            if not token:
+                return jsonify('Unauthorized, you must log in'), 401
             url = 'https://www.googleapis.com/plus/v1/people/me?access_token='
             res = requests.get(url+token)
             if res.status_code == 200:
@@ -22,8 +24,12 @@ def check_token(func):
                     return func(*args, **kwargs)
                 else:    
                     return jsonify('Unauthorized'), 401
+            elif res.status_code == 401:
+                return jsonify('Invalid credentials'), 401                        
+            
             return jsonify('Unauthorized'), 401
         except Exception as e:
             pass
+            print("Error, ", e)
             return jsonify('Error'), 500
     return decorated_funcion
