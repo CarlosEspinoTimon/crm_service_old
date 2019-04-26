@@ -16,6 +16,11 @@ class Config(object):
             }
     }
 
+    GOOGLE_PROJECT = os.environ.get('GOOGLE_PROJECT') 
+    GOOGLE_BUCKET = os.environ.get('GOOGLE_BUCKET') 
+    BUCKET_URL = 'https://storage.googleapis.com/crm-service-bucket/'
+
+
 class Prod(Config):
     DATABASE_URI = os.environ.get('DATABASE_URI')
 
