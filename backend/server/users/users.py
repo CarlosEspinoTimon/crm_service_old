@@ -7,16 +7,22 @@ from server.helpers.db_helper import get_table, get_session
 from server.helpers.images import upload_image
 
 from .helper import create_customer, update_customer, delete_customer_by_id, \
-                    get_user_id, get_url_stored_image
+                    get_user_id, get_url_stored_image, get_customer_by_id
+
 
 from server.decorators import check_token
 
+from werkzeug import exceptions
 
+
+
+controlled_exceptions = exceptions.InternalServerError, \
+    exceptions.Unauthorized, exceptions.Forbidden 
 
 users = Blueprint('users', __name__, url_prefix='/')
 CORS(users, max_age=30*86400)
 
-@users.route('/customers', methods=['GET'])
+@users.route('/customers/', methods=['GET'])
 @check_token
 def get_all_customers():
     '''
@@ -30,7 +36,6 @@ def get_all_customers():
         customers = [Customer({k:v for k,v in row.items()}).__str__() \
                                     for row in res]
     except Exception as e:
-        # TODO catch the error to ignore database errors
         print("ERROR: ", e)
         abort(406, 'There has been an error in the server')
     return jsonify(customers), 200
@@ -46,9 +51,8 @@ def get_customer(id):
     :rtype: Customer.
     '''
     try:
-        customer = get_customer(id)
+        customer = get_customer_by_id(id)
     except Exception as e:
-        # TODO catch the error to ignore database errors
         print("ERROR: ", e)
         abort(406, 'There has been an error in the server')
     return jsonify(customer.__str__()), 200
@@ -75,8 +79,9 @@ def post_customer():
         customer = create_customer(sess, data, user_id)
         sess.commit()
     except Exception as e:
-        # TODO catch the error to ignore database errors
         sess.rollback()
+        if type(e) in (controlled_exceptions):
+            abort(e)
         print("ERROR: ", e)
         abort(406, 'There has been an error in the server')
     return jsonify(customer.__str__()), 201
@@ -104,8 +109,9 @@ def put_customer(customer_id):
         update_customer(sess, customer_id, data, user_id)
         sess.commit()
     except Exception as e:
-        # TODO catch the error to ignore database errors
         sess.rollback()
+        if type(e) in (controlled_exceptions):
+            abort(e)
         print("ERROR: ", e)
         abort(406, 'There has been an error in the server')
     return jsonify('Customer updated'), 200
@@ -123,7 +129,6 @@ def delete_customer(id):
         delete_customer_by_id(sess, id)
         sess.commit()
     except Exception as e:
-        # TODO catch the error to ignore database errors
         sess.rollback()
         print("ERROR: ", e)
         abort(406, 'There has been an error in the server')

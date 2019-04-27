@@ -20,6 +20,7 @@ def oauth_authorize(provider):
 def oauth_callback(provider):
     oauth = OAuthSignIn.get_provider(provider)
     email, access_token = oauth.callback()
+    
     if email is None:
         return jsonify('Authentication failed')
     user_table = get_table('users')

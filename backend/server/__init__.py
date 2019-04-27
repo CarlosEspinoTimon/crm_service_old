@@ -46,23 +46,8 @@ def create_app(app_config='config.Config'):
     app.register_blueprint(users.users)
     from .auth import auth
     app.register_blueprint(auth.auth)
-
-    # A simple page that says server status
-    @app.route('/image', methods=['POST'])
-    @cross_origin()
-    def image():
-        # print(request.get_json())
-        req = request.get_json()
-        image = req.get('image', None)
-        if image:
-            from .helpers.images import upload_image
-            try:
-                print(upload_image(image, 'image/png', '.psng'))
-            except Exception as e:
-                print(e)
-         
-
-        return jsonify('The server is running!!')
+    from .admin import admin
+    app.register_blueprint(admin.admin)
     
 
    

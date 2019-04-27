@@ -7,8 +7,12 @@ from server.models.customer import Customer
 
 import requests
 
+from datetime import datetime
 
-def get_customer(id):
+from werkzeug import exceptions
+
+
+def get_customer_by_id(id):
     '''
     Function that given an id it returns the customer
     :param int id: the customer's id
@@ -36,7 +40,9 @@ def create_customer(sess, data, user_id):
         surname = data['surname'],
         photo_url = data.get('photo_url'),
         created_by = user_id,
-        last_modify_by = user_id
+        last_modify_by = user_id,
+        created_at = datetime.now(),
+        modified_at = datetime.now(),
     )
 
     sess.execute(stmt)
@@ -59,12 +65,13 @@ def update_customer(sess, customer_id, data, user_id):
         name = data['name'],
         surname = data['surname'],
         photo_url = data.get('photo_url'),
-        last_modify_by = user_id
+        last_modify_by = user_id,
+        modified_at = datetime.now(),
     ).where(cust_table.c.id == customer_id)
     
     res = sess.execute(stmt)
     if res.rowcount == 0:
-        raise Exception("User not found")
+        raise Exception("Customer not found")
     
 
 def delete_customer_by_id(sess, customer_id):
@@ -73,13 +80,12 @@ def delete_customer_by_id(sess, customer_id):
     :param Session sess: The session of the connection with the database.
     :param int customer_id: The id of the customer that is been deleted.
     '''
-    try:
-        cust_table = get_table('customers')
-        stmt = cust_table.delete().where(cust_table.c.id == customer_id)
+    cust_table = get_table('customers')
+    stmt = cust_table.delete().where(cust_table.c.id == customer_id)
 
-        sess.execute(stmt)
-    except Exception:
-        print("EEEE")
+    res = sess.execute(stmt)
+    if res.rowcount == 0:
+        raise Exception("Customer does not exists")
 
 def get_user_id(token):
     '''
@@ -98,11 +104,15 @@ def get_user_id(token):
                             user_table.c.email == email).execute().first()
             if user:
                 return user['id']
-        raise Exception('User not found', 500)
+            else:
+                abort(403)
+        abort(401)
     except Exception as e:
-        pass
-        print("Error: ", e)
-        raise Exception('Server error', 500)
+        if type(e) == exceptions.Unauthorized:
+            abort(401, 'User not found or not enough privileges')
+        elif type(e) == exceptions.Forbidden:
+            abort(403, 'You not a user')
+        abort(500, 'Server error')
 
 def get_url_stored_image(customer_id):
     '''
