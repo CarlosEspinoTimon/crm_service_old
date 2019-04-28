@@ -1,7 +1,10 @@
 version: '3'
 services:
   crm_backend:
-    build: ./backend/
+    # build: ./
+    build:
+      context: ./backend/
+      dockerfile: ./development_dockerfile/Dockerfile
     ports:
      - "5000:5000"
     depends_on:

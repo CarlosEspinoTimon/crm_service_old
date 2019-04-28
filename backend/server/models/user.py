@@ -18,6 +18,7 @@ class User(UserMixin):
             admin_privileges_by = self.admin_privileges_by,
             created_at = self.created_at,
             modified_at = self.modified_at,
+            modified_by = self.modified_by,
             created_by = self.created_by
         )
         return template

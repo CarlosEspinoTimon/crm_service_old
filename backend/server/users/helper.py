@@ -96,7 +96,9 @@ def get_user_id(token):
     '''
     try:
         url = 'https://www.googleapis.com/plus/v1/people/me?access_token='
+        print("get user id 1")
         res = requests.get(url+token)
+        print("get user id 2")
         if res.status_code == 200:
             email = res.json()['emails'][0]['value']
             user_table = get_table('users')
