@@ -9,7 +9,7 @@ You need to install:
 - docker-compose 
 - docker
 
-Also, you need to create a .env file in the `backend` directory with some variables:
+You need to create a .env file in the `backend` directory with some variables:
 ```
 FLASK_APP=server:create_app('config.Dev')
 FLASK_ENV=development
@@ -17,8 +17,14 @@ DATABASE_URI=YOUR_PRODUCTION_DATABASE
 PYTHONUNBUFFERED=1
 GOOGLE_LOGIN_CLIENT_ID=YOUR_CLIENT_ID
 GOOGLE_LOGIN_CLIENT_SECRET=YOUR_CLIENT_SECRET
+GOOGLE_APPLICATION_CREDENTIALS=.credentials/crm-service-storage-key.json
+GOOGLE_PROJECT=PROJECT_NAME
+GOOGLE_BUCKET=BUCKET_NAME
 ```
-The DATABASE_URI is just for production, the config.Dev file configures by default the URI to the local database of the docker-compose
+The DATABASE_URI is just for production, the config.Dev file configures by default the URI to the local database of the docker-compose.
+
+You have to create a .credentials folder in the `backend` directory where you have to put the Google Cloud Storage bucket key and it has to be named `crm-service-storage-key.json`
+
 ### Run the server
 The server runs by default in development mode. To start it, you have to run:
 
