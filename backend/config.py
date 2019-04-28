@@ -20,6 +20,8 @@ class Config(object):
     GOOGLE_BUCKET = os.environ.get('GOOGLE_BUCKET') 
     BUCKET_URL = 'https://storage.googleapis.com/crm-service-bucket/'
 
+    SQLALCHEMY_TRACK_MODIFICATIONS = 'False'
+
 
 class Prod(Config):
     DATABASE_URI = os.environ.get('DATABASE_URI')
@@ -29,3 +31,4 @@ class Dev(Config):
 
 class Test(Config):
     TESTING = True
+    DATABASE_URI = 'mysql://user:password@10.1.0.102/test_crm'
