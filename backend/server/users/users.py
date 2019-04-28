@@ -70,16 +70,10 @@ def post_customer():
     sess = get_session()
     try:
         user_id = get_user_id(request.headers.get('access_token'))
-        print("post 1")
         data = request.get_json()
-        print("post 2")
-        print("post data: ", data)
         if data.get('photo'):
-            print("post 3")
             image = data['photo'].get('str_image')
-            print("post 4")
             extension = data['photo'].get('extension')
-            print("post 5")
             content_type = 'image/{}'.format(extension[1:])
             data['photo_url'] = upload_image(image, content_type, extension)
         customer = create_customer(sess, data, user_id)
