@@ -51,7 +51,16 @@ and install the module:
 `pipenv install MODULE-NAME [--dev]`
 
 ## Running the tests
-<!-- TODO -->
+To run the test you have to change the `FLASK_APP=server:create_app('config.Dev')` to `FLASK_APP=server:create_app('config.Test')` in the `.env` file.
+
+Then you have to access the container:
+
+`[sudo] docker exec -it $([sudo] docker ps | grep "crm_backend" | awk '{ print $1 }') bash`
+
+And run the tests:
+
+`pypenv run python tests.py`
+
 ## Deployment
 This server is prepared to be deployed in Google App Engine Flexible, to do so, you need to configure the `app.yaml` file and the latest `requirements.txt`.
 ### app.yaml
