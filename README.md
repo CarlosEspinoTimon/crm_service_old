@@ -40,4 +40,22 @@ and install the module:
 ## Running the tests
 <!-- TODO -->
 ## Deployment
-<!-- TODO -->
+This server is prepared to be deployed in Google App Engine Flexible, to do so, you need to configure the `app.yaml` file and the latest `requirements.txt`.
+### app.yaml
+In the repository there are an `app.yaml` example, in this file you have to change the environment variables for the real ones. For security, to avoid uploading credentials to the repository, you should create a copy of the file and call it `real_app.yaml` which is already in the .gitignore, put the real environment variables there and deploy it from there `gcloud app deploy real_app.yaml`.
+### requirements.txt
+To generate the latest `requirements.txt`, you have to get into the container:
+
+`[sudo] docker exec -it $([sudo] docker ps | grep "crm_backend" | awk '{ print $1 }') bash`
+
+and generate the file:
+
+`pipenv lock -r > requirements.txt`
+
+it is also needed the gunicorn module:
+
+`echo "gunicorn==19.3.0" >> requirements.txt`
+
+This file will be created inside the container and in the folder shared with the host.
+### Deploy it
+Once you have it, you can deploy the app by running: `gcloud app deploy [real_app.yaml]` in the `backend` directory. Beware that you have to have [initiated the cloud SDK](https://cloud.google.com/sdk/docs/initializing "Initializing Cloud SDK")

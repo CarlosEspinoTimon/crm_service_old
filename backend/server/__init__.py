@@ -36,7 +36,7 @@ def create_app(app_config='config.Config'):
   
        
     # A simple page that says server status
-    @app.route('/server-status/')
+    @app.route('/')
     @cross_origin()
     def home():
         return jsonify('The server is running!!')
