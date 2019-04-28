@@ -4,14 +4,26 @@ from flask_cors import CORS, cross_origin
 from server.models.customer import Customer
 
 from server.helpers.db_helper import get_table, get_session
+from server.helpers.images import upload_image
 
-from .helper import create_customer, update_customer, delete_customer_by_id
+from .helper import create_customer, update_customer, delete_customer_by_id, \
+                    get_user_id, get_url_stored_image, get_customer_by_id
 
 
-bp = Blueprint('users', __name__, url_prefix='/')
-CORS(bp, max_age=30*86400)
+from server.decorators import check_token
 
-@bp.route('/customers', methods=['GET'])
+from werkzeug import exceptions
+
+
+
+controlled_exceptions = exceptions.InternalServerError, \
+    exceptions.Unauthorized, exceptions.Forbidden 
+
+users = Blueprint('users', __name__, url_prefix='/')
+CORS(users, max_age=30*86400)
+
+@users.route('/customers/', methods=['GET'])
+@check_token
 def get_all_customers():
     '''
     Function that returns all the customers.
@@ -24,13 +36,13 @@ def get_all_customers():
         customers = [Customer({k:v for k,v in row.items()}).__str__() \
                                     for row in res]
     except Exception as e:
-        # TODO catch the error to ignore database errors
         print("ERROR: ", e)
         abort(406, 'There has been an error in the server')
     return jsonify(customers), 200
 
 
-@bp.route('/customer/<int:id>', methods=['GET'])
+@users.route('/customer/<int:id>', methods=['GET'])
+@check_token
 def get_customer(id):
     '''
     Function that given an id it returns the customer.
@@ -39,15 +51,15 @@ def get_customer(id):
     :rtype: Customer.
     '''
     try:
-        customer = get_customer(id)
+        customer = get_customer_by_id(id)
     except Exception as e:
-        # TODO catch the error to ignore database errors
         print("ERROR: ", e)
         abort(406, 'There has been an error in the server')
     return jsonify(customer.__str__()), 200
 
 
-@bp.route('/customer', methods=['POST'])
+@users.route('/customer', methods=['POST'])
+@check_token
 def post_customer():
     '''
     Function that given the customer data it creates it.
@@ -55,40 +67,58 @@ def post_customer():
     :return customer: The customer.
     :rtype: Customer.
     '''
+    sess = get_session()
     try:
+        user_id = get_user_id(request.headers.get('access_token'))
         data = request.get_json()
-        sess = get_session()
-        customer = create_customer(sess, data, 'user_id')
+        if data.get('photo'):
+            image = data['photo'].get('str_image')
+            extension = data['photo'].get('extension')
+            content_type = 'image/{}'.format(extension[1:])
+            data['photo_url'] = upload_image(image, content_type, extension)
+        customer = create_customer(sess, data, user_id)
         sess.commit()
     except Exception as e:
-        # TODO catch the error to ignore database errors
         sess.rollback()
+        if type(e) in (controlled_exceptions):
+            abort(e)
         print("ERROR: ", e)
         abort(406, 'There has been an error in the server')
     return jsonify(customer.__str__()), 201
 
 
-@bp.route('/customer/<int:id>', methods=['PUT'])
-def put_customer(id):
+@users.route('/customer/<int:customer_id>', methods=['PUT'])
+@check_token
+def put_customer(customer_id):
     '''
-    Function that given the customer data and its id it updates it.
-    :param int id: the id of the customer.
+    Function that given the customer data and its customer_id it updates it.
+    :param int customer_id: the id of the customer.
     :param dict data: the data of the customer sent in the body of the request.
     '''
+    sess = get_session()
     try:
+        user_id = get_user_id(request.headers.get('access_token'))
         data = request.get_json()
-        sess = get_session()
-        update_customer(sess, id, data, 'user_id_3')
+        if data.get('photo'):
+            image = data['photo'].get('str_image')
+            extension = data['photo'].get('extension')
+            content_type = 'image/{}'.format(extension[1:])
+            url = get_url_stored_image(customer_id)
+            data['photo_url'] = upload_image(image, content_type, extension, 
+                                            url)
+        update_customer(sess, customer_id, data, user_id)
         sess.commit()
     except Exception as e:
-        # TODO catch the error to ignore database errors
         sess.rollback()
+        if type(e) in (controlled_exceptions):
+            abort(e)
         print("ERROR: ", e)
         abort(406, 'There has been an error in the server')
     return jsonify('Customer updated'), 200
 
 
-@bp.route('/customer/<int:id>', methods=['DELETE'])
+@users.route('/customer/<int:id>', methods=['DELETE'])
+@check_token
 def delete_customer(id):
     '''
     Function that given the customer id it deletes it.
@@ -99,9 +129,9 @@ def delete_customer(id):
         delete_customer_by_id(sess, id)
         sess.commit()
     except Exception as e:
-        # TODO catch the error to ignore database errors
         sess.rollback()
         print("ERROR: ", e)
         abort(406, 'There has been an error in the server')
     return jsonify('Customer deleted'), 200
+    
 
