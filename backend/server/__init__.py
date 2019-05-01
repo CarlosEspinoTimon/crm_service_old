@@ -39,7 +39,7 @@ def create_app(app_config='config.Config'):
     @app.route('/')
     @cross_origin()
     def home():
-        return jsonify('The server is running!!!')
+        return jsonify('The server is running!!')
     
     # Import the blueprints
     from .users import users
