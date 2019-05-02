@@ -24,7 +24,7 @@ pipeline {
             steps{
                 echo """echo cd /var/lib/jenkins/envs/"""
                 echo """echo source .env """
-                echo "echo \$GOOGLE_PROJECT"
+                echo "echo ${env.GOOGLE_BUCKET}"
             }
         }
     }
