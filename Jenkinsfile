@@ -14,9 +14,17 @@ pipeline {
                     echo \$bucket"""
             }
         }
-        stage('Where ') {
+        stage('Where') {
             steps{
                 echo """echo Shell $PWD"""
+            }
+        }
+
+        stage("Source activate") {
+            steps{
+                echo """echo cd /var/lib/jenkins/envs/"""
+                echo """echo source .env """
+                echo "echo \$GOOGLE_PROJECT"
             }
         }
     }
