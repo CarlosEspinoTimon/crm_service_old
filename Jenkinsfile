@@ -25,6 +25,10 @@ pipeline {
                 echo """echo cd /var/lib/jenkins/envs/"""
                 echo """echo source .env """
                 echo "echo ${env.GOOGLE_BUCKET}"
+                sh '''
+                    cd /var/lib/jenkins/envs/
+                    source .env
+                    '''
             }
         }
     }
