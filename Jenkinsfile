@@ -14,6 +14,11 @@ pipeline {
                     echo \$bucket"""
             }
         }
+        stage('Where ') {
+            steps{
+                echo """echo Shell $PWD"""
+            }
+        }
     }
 
 
