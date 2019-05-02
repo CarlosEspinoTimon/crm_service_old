@@ -8,10 +8,9 @@ pipeline {
             }
             
         }
-        stage('Try env variable') {
+        stage('Load env variables') {
             steps{
-                echo """bucket=${env.GOOGLE_BUCKET}
-                    echo \$bucket"""
+                load "/var/lib/jenkins/envs/crm-staging.groovy"
             }
         }
         stage('Where') {
@@ -20,19 +19,21 @@ pipeline {
             }
         }
 
-        stage("Source activate") {
+        stage('Change yaml') {
             steps{
-                // echo """echo cd /var/lib/jenkins/envs/"""
-                // echo """echo source .env """
-                // echo "echo ${env.GOOGLE_BUCKET}"
-                // sh '''
-                //     cd /var/lib/jenkins/envs/
-                //     source .env
-                //     '''
-                load "/var/lib/jenkins/envs/crm-staging.groovy"
-                echo "${env.GOOGLE_BUCKET}"
+                def filename = '/var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml'
+                def data = readYaml file: filename
+
+                // Change something in the file
+                data.env_variables.DATABASE_URI = ${env.DATABASE_URI}
+
+                sh "rm $filename"
+                writeYaml file: filename, data: data
+                
             }
         }
+
+        
     }
 
 
