@@ -22,13 +22,15 @@ pipeline {
 
         stage("Source activate") {
             steps{
-                echo """echo cd /var/lib/jenkins/envs/"""
-                echo """echo source .env """
-                echo "echo ${env.GOOGLE_BUCKET}"
-                sh '''
-                    cd /var/lib/jenkins/envs/
-                    source .env
-                    '''
+                // echo """echo cd /var/lib/jenkins/envs/"""
+                // echo """echo source .env """
+                // echo "echo ${env.GOOGLE_BUCKET}"
+                // sh '''
+                //     cd /var/lib/jenkins/envs/
+                //     source .env
+                //     '''
+                load "/var/lib/jenkins/envs/crm-staging.groovy"
+                echo "${env.GOOGLE_BUCKET}"
             }
         }
     }
