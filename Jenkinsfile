@@ -10,8 +10,8 @@ pipeline {
         }
         stage('Try env variable') {
             steps{
-                echo "bucket=${env.GOOGLE_BUCKET}
-                    echo \$bucket"
+                echo """bucket=${env.GOOGLE_BUCKET}
+                    echo \$bucket"""
             }
         }
     }
