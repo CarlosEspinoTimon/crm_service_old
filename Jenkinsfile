@@ -17,12 +17,11 @@ pipeline {
         stage('Tests'){
             steps{
                 echo "Build environment "
-                // sh "sudo docker info"
-                sh "docker info"
                 sh "docker-compose -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml build"
-                // sh "DOCKER_HOST=127.0.0.1:2375 /usr/local/bin/docker-compose -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml build"
-                // sh "DOCKER_HOST=127.0.0.1:2375 /usr/local/bin/docker-compose -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml up -d"
+                sh "docker-compose -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml up -d"
                 echo "Running tests..."
+                echo "Stop all containers"
+                sh "docker stop $(docker ps -a -q)"
             }
         }
 
