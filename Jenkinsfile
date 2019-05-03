@@ -17,9 +17,9 @@ pipeline {
         stage('Tests'){
             steps{
                 echo "Build environment"
-                sh "DOCKER_HOST=127.0.0.1docker info"
-                sh "DOCKER_HOST=127.0.0.1 /usr/local/bin/docker-compose -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml build"
-                sh "DOCKER_HOST=127.0.0.1 /usr/local/bin/docker-compose -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml up -d"
+                sh "DOCKER_HOST=127.0.0.1:2375 docker info"
+                sh "DOCKER_HOST=127.0.0.1:2375 /usr/local/bin/docker-compose -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml build"
+                sh "DOCKER_HOST=127.0.0.1:2375 /usr/local/bin/docker-compose -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml up -d"
                 echo "Running tests..."
             }
         }
