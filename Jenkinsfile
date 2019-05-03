@@ -24,16 +24,15 @@ pipeline {
                 script {
                     def inptext = readFile file: '/var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml' 
                     inptext = inptext.replaceAll("PRODUCTION_DATABASE_URI", "${env.DATABASE_URI}")       
+                    inptext = inptext.replaceAll("YOUR_GOOGLE_LOGIN_CLIENT_ID", "${env.GOOGLE_LOGIN_CLIENT_ID}")       
+                    inptext = inptext.replaceAll("YOUR_GOOGLE_LOGIN_CLIENT_SECRET", "${env.GOOGLE_LOGIN_CLIENT_SECRET}")       
+                    inptext = inptext.replaceAll("YOUR_GOOGLE_APPLICATION_CREDENTIALS", "${env.GOOGLE_APPLICATION_CREDENTIALS}")       
+                    inptext = inptext.replaceAll("YOUR_GOOGLE_PROJECT", "${env.GOOGLE_PROJECT}")       
+                    inptext = inptext.replaceAll("YOUR_GOOGLE_BUCKET", "${env.GOOGLE_BUCKET}")       
                     writeFile file: "'/var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml'", text: inptext
                     
-                    // def filename = '/var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml'
-                    // def data = readYaml file: filename
-
-                    // // Change something in the file
-                    // data.env_variables.PRODUCTION_DATABASE_URI = ${env.DATABASE_URI}
-
-                    // sh "rm $filename"
-                    // writeYaml file: filename, data: data
+            
+                    sh "cat /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"
                     
                 }
 
