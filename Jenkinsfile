@@ -16,6 +16,9 @@ pipeline {
 
         stage('Tests'){
             steps{
+                echo "Build environment"
+                sh "docker-composer -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml build"
+                sh "docker-compose -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml up -d"
                 echo "Running tests..."
             }
         }
