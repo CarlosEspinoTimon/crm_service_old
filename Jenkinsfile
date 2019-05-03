@@ -20,13 +20,32 @@ pipeline {
                 sh "docker-compose -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml build"
                 sh "docker-compose -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml up -d"
                 echo "Running tests..."
+                sh "docker ps"
                 sh "docker exec -it crm_service_crm_backend_1 pipenv run python tests.py"
                 echo "Stop all containers"
                 sh "docker stop \$(docker ps -a -q)"
             }
         }
 
-        stage('Change yaml') {
+        // stage('Change yaml') {
+        //     steps{
+        //         script {
+        //             sh """sed -i "s*PRODUCTION_DATABASE_URI*${env.DATABASE_URI}*g" /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"""
+        //             sh """sed -i "s*YOUR_GOOGLE_LOGIN_CLIENT_ID*${env.GOOGLE_LOGIN_CLIENT_ID}*g" /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"""
+        //             sh """sed -i "s*YOUR_GOOGLE_LOGIN_CLIENT_SECRET*${env.GOOGLE_LOGIN_CLIENT_SECRET}*g" /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"""
+        //             sh """sed -i "s*YOUR_GOOGLE_APPLICATION_CREDENTIALS*${env.GOOGLE_APPLICATION_CREDENTIALS}*g" /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"""
+        //             sh """sed -i "s*YOUR_GOOGLE_PROJECT*${env.GOOGLE_PROJECT}*g" /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"""
+        //             sh """sed -i "s*YOUR_GOOGLE_BUCKET*${env.GOOGLE_BUCKET}*g" /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"""
+        //             sh "cat /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"
+                    
+        //         }
+
+        //     }
+        // }
+        stage('Deploy to GCP') {
+            when {
+                branch "master"
+            }
             steps{
                 script {
                     sh """sed -i "s*PRODUCTION_DATABASE_URI*${env.DATABASE_URI}*g" /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"""
@@ -39,11 +58,6 @@ pipeline {
                     
                 }
 
-            }
-        }
-        stage('Deploy to GCP') {
-            when {
-                branch "master"
             }
             steps{
                 sh """
