@@ -60,6 +60,8 @@ pipeline {
                     sh "cat /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"
                     
                 }
+                echo "Generate requirements.txt"
+                // GENERAR TXT
                 echo "Deploy"
                 sh """
                     #!/bin/bash 
