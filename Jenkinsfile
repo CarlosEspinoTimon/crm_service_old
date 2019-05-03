@@ -7,12 +7,12 @@ pipeline {
         stage('Load env variables') {
             steps{
                 load "/var/lib/jenkins/envs/crm-staging.groovy"
-            }
-        }
-        environment {
-            GOOGLE_PROJECT_ID = ${env.GOOGLE_PROJECT};
+                environment {
+                    GOOGLE_PROJECT_ID = ${env.GOOGLE_PROJECT};
 
-            GOOGLE_SERVICE_ACCOUNT_KEY = credentials('service_account_key');
+                    GOOGLE_SERVICE_ACCOUNT_KEY = credentials('service_account_key');
+                }
+            }
         }
 
         stage('Tests'){
@@ -49,8 +49,8 @@ pipeline {
                     source /tmp/google-cloud-sdk/path.bash.inc;
                     
                     
-                    gcloud config set project ${GOOGLE_PROJECT_ID};
-                    gcloud auth activate-service-account --key-file ${GOOGLE_SERVICE_ACCOUNT_KEY};
+                    gcloud config set project ${env.GOOGLE_PROJECT_ID};
+                    gcloud auth activate-service-account --key-file ${credentials('service_account_key')};
                     
                     gcloud config list;
                     gcloud app deploy --version=v01;
