@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+    	
+	GOOGLE_SERVICE_ACCOUNT_KEY = credentials('service_account_key');
+    }
 
     stages{
         
@@ -46,7 +50,11 @@ pipeline {
                     
                     
                     gcloud config set project ${env.GOOGLE_PROJECT};
+                    gcloud auth activate-service-account --key-file ${GOOGLE_SERVICE_ACCOUNT_KEY};
                     
+                    gcloud config list;
+                    gcloud app deploy --version=v01;
+                    echo "Deployed to GCP"
                 """
 
             }
