@@ -21,15 +21,18 @@ pipeline {
 
         stage('Change yaml') {
             steps{
-                def filename = '/var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml'
-                def data = readYaml file: filename
+                script {
+                    def filename = '/var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml'
+                    def data = readYaml file: filename
 
-                // Change something in the file
-                data.env_variables.DATABASE_URI = ${env.DATABASE_URI}
+                    // Change something in the file
+                    data.env_variables.DATABASE_URI = ${env.DATABASE_URI}
 
-                sh "rm $filename"
-                writeYaml file: filename, data: data
-                
+                    sh "rm $filename"
+                    writeYaml file: filename, data: data
+                    
+                }
+
             }
         }
 
