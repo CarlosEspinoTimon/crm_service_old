@@ -1,5 +1,5 @@
 USE test_crm;
-CREATE TABLE `users` (
+CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(45) DEFAULT NULL,
   `admin` tinyint(4) NOT NULL,
@@ -15,9 +15,10 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 
-INSERT INTO `users` VALUES (1,'admin@email.com',1,1,'2019-04-26 16:42:11',1,'2019-04-26 16:48:22',1);
+INSERT INTO `users` VALUES (1,'admin@email.com',1,1,'2019-04-26 16:42:11',1,'2019-04-26 16:48:22',1) 
+On DUPLICATE KEY UPDATE `email` = 'admin@email.com';
 
-CREATE TABLE `customers` (
+CREATE TABLE IF NOT EXISTS `customers` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
   `surname` varchar(45) NOT NULL,
