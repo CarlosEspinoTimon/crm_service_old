@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-    	
 	    GOOGLE_SERVICE_ACCOUNT_KEY = credentials('deployment_key');
     }
 
@@ -36,12 +35,14 @@ pipeline {
 
             }
         }
-        stage('Deploy') {
+        stage('Deploy to GCP') {
+            when {
+                branch "master"
+            }
             steps{
-                //Deploy to GCP
                 sh """
                     #!/bin/bash 
-                    echo "deploy stage";
+                    echo "Deploy stage";
                     curl -o /tmp/google-cloud-sdk.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-225.0.0-linux-x86_64.tar.gz;
                     tar -xvf /tmp/google-cloud-sdk.tar.gz -C /tmp/;
                     /tmp/google-cloud-sdk/install.sh -q;
