@@ -17,7 +17,7 @@ pipeline {
         stage('Tests'){
             steps{
                 echo "Build environment"
-                sh "sudo usermod -aG docker $USER"
+                sh "usermod -aG docker $USER"
                 sh "DOCKER_HOST=127.0.0.1:2375 docker info"
                 sh "DOCKER_HOST=127.0.0.1:2375 /usr/local/bin/docker-compose -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml build"
                 sh "DOCKER_HOST=127.0.0.1:2375 /usr/local/bin/docker-compose -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml up -d"
