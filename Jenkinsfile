@@ -47,6 +47,7 @@ pipeline {
                 branch "master"
             }
             steps{
+                echo "Modify yaml"
                 script {
                     sh """sed -i "s*PRODUCTION_DATABASE_URI*${env.DATABASE_URI}*g" /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"""
                     sh """sed -i "s*YOUR_GOOGLE_LOGIN_CLIENT_ID*${env.GOOGLE_LOGIN_CLIENT_ID}*g" /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"""
@@ -57,9 +58,7 @@ pipeline {
                     sh "cat /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"
                     
                 }
-
-            }
-            steps{
+                echo "Deploy"
                 sh """
                     #!/bin/bash 
                     echo "Deploy stage";
