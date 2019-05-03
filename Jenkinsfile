@@ -53,7 +53,7 @@ pipeline {
                     gcloud auth activate-service-account --key-file ${GOOGLE_SERVICE_ACCOUNT_KEY};
                     
                     gcloud config list;
-                    gcloud app deploy --version=v01;
+                    gcloud app deploy /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml;
                     echo "Deployed to GCP"
                 """
 
