@@ -21,7 +21,7 @@ pipeline {
                 sh "docker-compose -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml up -d"
                 echo "Running tests..."
                 echo "Stop all containers"
-                sh "docker stop $(docker ps -a -q)"
+                sh "docker stop \$(docker ps -a -q)"
             }
         }
 
