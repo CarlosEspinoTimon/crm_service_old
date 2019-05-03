@@ -46,11 +46,11 @@ pipeline {
                     
                     
                     gcloud config set project ${env.GOOGLE_PROJECT};
-                    gcloud auth activate-service-account --key-file ${credentials('service_account_key')};
+                    // gcloud auth activate-service-account --key-file ${credentials('service_account_key')};
                     
-                    gcloud config list;
-                    gcloud app deploy --version=v01;
-                    echo "Deployed to GCP"
+                    // gcloud config list;
+                    // gcloud app deploy --version=v01;
+                    // echo "Deployed to GCP"
                 """
 
             }
