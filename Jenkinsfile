@@ -33,7 +33,7 @@ pipeline {
                     
             
                     sh "cat /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"
-                    sh """sed -i "s/PRODUCTION_DATABASE_URI/${env.DATABASE_URI}/g" /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"""
+                    sh """sed -i "s@PRODUCTION_DATABASE_URI@${env.DATABASE_URI}@g" /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"""
                     sh "cat /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"
                     
                 }
