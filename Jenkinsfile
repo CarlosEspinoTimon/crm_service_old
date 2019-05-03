@@ -7,11 +7,7 @@ pipeline {
         stage('Load env variables') {
             steps{
                 load "/var/lib/jenkins/envs/crm-staging.groovy"
-                environment {
-                    GOOGLE_PROJECT_ID = ${env.GOOGLE_PROJECT};
-
-                    GOOGLE_SERVICE_ACCOUNT_KEY = credentials('service_account_key');
-                }
+                
             }
         }
 
