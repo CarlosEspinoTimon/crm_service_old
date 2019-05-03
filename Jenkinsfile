@@ -21,7 +21,7 @@ pipeline {
                 sh "docker-compose -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml up -d"
                 echo "Running tests..."
                 sh "docker ps"
-                sh "docker exec -it crm_pipeline_crm_backend_1 pipenv run python tests.py"
+                sh "docker exec -i crm_pipeline_crm_backend_1 pipenv run python tests.py"
                 echo "Stop all containers"
                 sh "docker stop \$(docker ps -a -q)"
             }
