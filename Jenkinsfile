@@ -42,7 +42,7 @@ pipeline {
                     tar -xvf /tmp/google-cloud-sdk.tar.gz -C /tmp/;
                     /tmp/google-cloud-sdk/install.sh -q;
                                 
-                    source /tmp/google-cloud-sdk/path.bash.inc;
+                    . /tmp/google-cloud-sdk/path.bash.inc;
                     
                     
                     gcloud config set project ${env.GOOGLE_PROJECT_ID};
