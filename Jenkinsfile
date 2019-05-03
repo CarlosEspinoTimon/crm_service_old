@@ -45,7 +45,7 @@ pipeline {
                     . /tmp/google-cloud-sdk/path.bash.inc;
                     
                     
-                    gcloud config set project ${env.GOOGLE_PROJECT_ID};
+                    gcloud config set project "${env.GOOGLE_PROJECT_ID}";
                     gcloud auth activate-service-account --key-file ${credentials('service_account_key')};
                     
                     gcloud config list;
