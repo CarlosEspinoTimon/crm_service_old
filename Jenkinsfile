@@ -20,7 +20,7 @@ pipeline {
                 sh "docker-compose -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml build"
                 sh "docker-compose -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml up -d"
                 echo "Execute initial dump script"
-                sh "mysql -u user -h 127.0.0.1  -ppassword < initial_dump_test.sql"
+                sh "mysql -u root -h 127.0.0.1  -proot_super_password < initial_dump_test.sql"
                 echo "Running tests..."
                 sh "docker ps"
                 sh "docker exec -i crm_pipeline_crm_backend_1 pipenv run python tests.py"
