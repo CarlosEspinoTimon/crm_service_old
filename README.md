@@ -76,7 +76,7 @@ To generate the latest `requirements.txt`, you have to get into the container:
 
 and generate the file:
 
-`pipenv lock -r >  requirements.txt`
+`pipenv lock -r > requirements.txt`
 
 it is also needed the gunicorn module:
 
