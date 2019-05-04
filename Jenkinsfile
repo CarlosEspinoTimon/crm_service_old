@@ -24,7 +24,7 @@ pipeline {
                 echo "Running tests..."
                 sh "docker ps"
                 sh "docker exec -i crm_pipeline_crm_backend_1 pipenv run python tests.py"
-                echo "Stop all containers"
+                echo "Stop all containers "
                 sh "docker stop \$(docker ps -a -q)"
             }
         }
