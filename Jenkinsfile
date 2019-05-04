@@ -6,6 +6,10 @@ pipeline {
     }
 
     stages{
+
+        stage('Checkout') {
+            checkout scm
+        }
         
         stage('Load env variables') {
             steps{
