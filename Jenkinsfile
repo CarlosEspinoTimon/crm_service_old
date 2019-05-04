@@ -63,6 +63,9 @@ pipeline {
                 sh "docker exec -i crm_pipeline_crm_backend_1 pipenv lock -r > requirements.txt"
                 sh "echo \"gunicorn==19.3.0\" >> requirements.txt"
                 sh "cat requirements.txt"
+                echo "Remove first line"
+                sh "echo \"$(tail -n +2 requirements.txt)\" > requirements.txt"
+                sh "cat requirements.txt"
                 echo "Deploy"
                 // sh """
                 //     #!/bin/bash 
