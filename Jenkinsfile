@@ -6,7 +6,13 @@ pipeline {
     }
 
     stages{
-
+        stage('If') {
+            if(env.GIT_BRANCH=='origin/master'){
+                    steps{
+                        echo "YESS"
+                    }
+                }
+        }
         
         stage('Load env variables') {
             steps{
@@ -15,9 +21,7 @@ pipeline {
 
                 echo "branch: ${env.GIT_BRANCH}"
                 sh 'printenv'
-                // if(env.GIT_BRANCH=='origin/master'){
-                //     echo "YESS"
-                // }
+                
             }
         }
 
