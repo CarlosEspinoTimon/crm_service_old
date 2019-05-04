@@ -128,7 +128,7 @@ class BasicTestCase(unittest.TestCase):
                                 
         self.assertEqual(res.status_code, 200)
         data = json.loads(res.get_data(as_text=True))
-        self.assertEqual(data, 'The server is running!!')
+        self.assertEqual(data, 'The server is running!!!')
 
 
     @mock.patch('requests.get', side_effect=mocked_requests_get)
