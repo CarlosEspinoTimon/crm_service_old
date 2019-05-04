@@ -52,8 +52,7 @@ pipeline {
                 expression {
                     return env.GIT_BRANCH == 'origin/master'
                 }
-            }
-            
+            }            
             steps{
                 echo "Modify yaml"
                 script {
