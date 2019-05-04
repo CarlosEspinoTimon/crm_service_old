@@ -13,8 +13,11 @@ pipeline {
                 load "/var/lib/jenkins/envs/crm-staging.groovy"
                 checkout scm
 
-                echo "branch: ${env.BRANCH_NAME}"
+                echo "branch: ${env.GIT_BRANCH}"
                 sh 'printenv'
+                if(env.GIT_BRANCH=='origin/master'){
+                    echo "YESS"
+                }
             }
         }
 
