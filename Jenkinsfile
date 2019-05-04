@@ -44,7 +44,8 @@ pipeline {
         // }
         stage('Deploy to GCP') {
             when {
-                branch "master"
+                // branch "master"
+                env.BRANCH_NAME == "master"
             }
             steps{
                 echo "Modify yaml"
@@ -86,6 +87,10 @@ pipeline {
             steps{
                 echo "Stop all containers"
                 sh "docker stop \$(docker ps -a -q)"
+                // echo "Delete all containers"
+                // sh "docker rm \$(docker ps -a -q)"
+                // echo "Delete all images"
+                // sh "docker rmi \$(docker images -q)"
             }
         }
 
