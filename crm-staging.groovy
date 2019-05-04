@@ -1,0 +1,6 @@
+env.DATABASE_URI="mysql://root:some_pass@35.226.141.72/crm_db"
+env.GOOGLE_LOGIN_CLIENT_ID="1081117001308-6vqhk9191m88kmbvvdl2elmicm7fm923.apps.googleusercontent.com"
+env.GOOGLE_LOGIN_CLIENT_SECRET="KwafmS-_jJGixNW6_amLaK3k"
+env.GOOGLE_APPLICATION_CREDENTIALS=".credentials/crm-service-storage-key.json"
+env.GOOGLE_PROJECT="crm-service-238211"
+env.GOOGLE_BUCKET="crm-service-bucket"
