@@ -51,7 +51,7 @@ pipeline {
       
         stage('Deploy to GCP') {
             when {
-                branch "origin/master" 
+                env.GIT_BRANCH "origin/master" 
             } 
             steps{
                 echo "Modify yaml"
