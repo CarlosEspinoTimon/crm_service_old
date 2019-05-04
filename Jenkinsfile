@@ -14,6 +14,7 @@ pipeline {
                 checkout scm
 
                 echo "branch: ${env.BRANCH_NAME}"
+                sh 'printenv'
             }
         }
 
