@@ -15,9 +15,9 @@ pipeline {
 
                 echo "branch: ${env.GIT_BRANCH}"
                 sh 'printenv'
-                if(env.GIT_BRANCH=='origin/master'){
-                    echo "YESS"
-                }
+                // if(env.GIT_BRANCH=='origin/master'){
+                //     echo "YESS"
+                // }
             }
         }
 
@@ -51,7 +51,7 @@ pipeline {
       
         stage('Deploy to GCP') {
             when {
-                branch "master" 
+                branch "origin/master" 
             } 
             steps{
                 echo "Modify yaml"
