@@ -47,15 +47,25 @@ pipeline {
         // }
       
         stage('Deploy to GCP') {
-            steps {
-                script {
-                    if (env.GIT_BRANCH == 'origin/master'){
-                        echo "YESSS"
-                    } else {
-                        echo "nooo"
-                    }
+            // steps {
+            //     script {
+            //         if (env.GIT_BRANCH == 'origin/master'){
+            //             echo "YESSS"
+            //         } else {
+            //             echo "nooo"
+            //         }
+            //     }
+            // }
+
+            when {
+                expression {
+                    return env.GIT_BRANCH == 'origin/master'
                 }
             }
+            steps{
+                echo "yeah"
+            }
+
             // when {
             //     branch "origin/master" 
             // } 
