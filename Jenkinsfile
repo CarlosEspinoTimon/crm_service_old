@@ -42,10 +42,11 @@ pipeline {
 
         //     }
         // }
+      
         stage('Deploy to GCP') {
             when {
-                branch "master"
-            }
+                branch "master" 
+            } 
             steps{
                 echo "Modify yaml"
                 script {
@@ -60,25 +61,27 @@ pipeline {
                 }
                 echo "Generate requirements.txt"
                 sh "docker exec -i crm_pipeline_crm_backend_1 pipenv lock -r > requirements.txt"
-                sh "echo \"gunicorn==19.9.0\" >> requirements.txt"
+                sh "echo \"gunicorn==19.3.0\" >> requirements.txt"
+                echo "Remove first line"
+                sh "echo \"\$(tail -n +2 requirements.txt)\" > requirements.txt"
                 echo "Deploy"
-                sh """
-                    #!/bin/bash 
-                    echo "Deploy stage";
-                    curl -o /tmp/google-cloud-sdk.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-225.0.0-linux-x86_64.tar.gz;
-                    tar -xvf /tmp/google-cloud-sdk.tar.gz -C /tmp/;
-                    /tmp/google-cloud-sdk/install.sh -q;
+                // sh """
+                //     #!/bin/bash 
+                //     echo "Deploy stage";
+                //     curl -o /tmp/google-cloud-sdk.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-225.0.0-linux-x86_64.tar.gz;
+                //     tar -xvf /tmp/google-cloud-sdk.tar.gz -C /tmp/;
+                //     /tmp/google-cloud-sdk/install.sh -q;
                                 
-                    . /tmp/google-cloud-sdk/path.bash.inc;
+                //     . /tmp/google-cloud-sdk/path.bash.inc;
                     
                     
-                    gcloud config set project ${env.GOOGLE_PROJECT};
-                    gcloud auth activate-service-account --key-file ${GOOGLE_SERVICE_ACCOUNT_KEY};
+                //     gcloud config set project ${env.GOOGLE_PROJECT};
+                //     gcloud auth activate-service-account --key-file ${GOOGLE_SERVICE_ACCOUNT_KEY};
                     
-                    gcloud config list;
-                    gcloud app deploy /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml;
-                    echo "Deployed to GCP"
-                """
+                //     gcloud config list;
+                //     gcloud app deploy /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml;
+                //     echo "Deployed to GCP"
+                // """
 
             }
         }
@@ -86,6 +89,10 @@ pipeline {
             steps{
                 echo "Stop all containers"
                 sh "docker stop \$(docker ps -a -q)"
+                // echo "Delete all containers"
+                // sh "docker rm \$(docker ps -a -q)"
+                // echo "Delete all images"
+                // sh "docker rmi \$(docker images -q)"
             }
         }
 
