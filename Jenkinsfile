@@ -46,7 +46,7 @@ pipeline {
 
             stage('Deploy to GCP') {
                 // when {
-                //     // branch "master"
+                //     // branch "master" 
                 //     env.BRANCH_NAME == "master"
                 // }
                 steps{
