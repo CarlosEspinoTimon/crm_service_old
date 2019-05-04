@@ -13,6 +13,10 @@ sqlalchemy = "*"
 requests = "*"
 flask-cors = "*"
 mysqlclient = "*"
+flask-login = "*"
+rauth = "*"
+google-api-python-client = "*"
+google-cloud-storage = "*"
 
 [requires]
 python_version = "3.6"
