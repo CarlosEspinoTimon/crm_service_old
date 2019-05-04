@@ -70,6 +70,8 @@ pipeline {
                 sh "echo \"gunicorn==19.3.0\" >> requirements.txt"
                 echo "Remove first line"
                 sh "echo \"\$(tail -n +2 requirements.txt)\" > requirements.txt"
+                echo "Move requirements.txt to correct destination"
+                sh "mv requirements.txt /var/lib/jenkins/workspace/crm_pipeline/backend/"
                 echo "Deploy"
                 sh """ 
                     #!/bin/bash
