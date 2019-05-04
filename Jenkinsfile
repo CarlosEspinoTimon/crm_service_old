@@ -1,16 +1,5 @@
 pipeline {
     agent any
-<<<<<<< HEAD
-    
-    stages{
-        stage('Init') {
-            steps{
-                echo "eeeeee"    
-            }
-            
-        }
-    }
-=======
 
     environment {
 	    GOOGLE_SERVICE_ACCOUNT_KEY = credentials('deployment_key');
@@ -76,7 +65,7 @@ pipeline {
                 echo "Remove first line"
                 sh "echo \"\$(tail -n +2 requirements.txt)\" > requirements.txt"
                 echo "Deploy"
-                // sh """
+                // sh """ 
                 //     #!/bin/bash 
                 //     echo "Deploy stage";
                 //     curl -o /tmp/google-cloud-sdk.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-225.0.0-linux-x86_64.tar.gz;
@@ -113,5 +102,4 @@ pipeline {
 
     
    
->>>>>>> 58350b09c47eba7f1e46de3bc0708f097efd475d
 }
