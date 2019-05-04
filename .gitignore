@@ -108,4 +108,6 @@ venv.bak/
 
 # DB
 crm_db/
+.credentials/
+backend/real_app.yaml
 

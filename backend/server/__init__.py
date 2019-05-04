@@ -1,7 +1,6 @@
 import os
 
-from flask import Flask, jsonify
-
+from flask import Flask, jsonify, g, redirect, url_for, request
 from flask_cors import CORS, cross_origin
 
 import config
@@ -11,7 +10,6 @@ from sqlalchemy.orm import sessionmaker
 from flask_sqlalchemy import SQLAlchemy
 
 import sys
-
 
 
 
@@ -31,18 +29,27 @@ def create_app(app_config='config.Config'):
     app.metadata = MetaData(bind=app.engine)
     app.Session = sessionmaker(bind=app.engine)
 
+
+    from server.helpers.db_helper import get_table
+    from server.models.user import User
+
+  
+       
     # A simple page that says server status
-    @app.route('/server-status/')
-    @cross_origin() 
+    @app.route('/')
+    @cross_origin()
     def home():
         return jsonify('The server is running!!')
-
     
     # Import the blueprints
     from .users import users
-    app.register_blueprint(users.bp)
-
+    app.register_blueprint(users.users)
+    from .auth import auth
+    app.register_blueprint(auth.auth)
+    from .admin import admin
+    app.register_blueprint(admin.admin)
     
+
    
     return app
 
