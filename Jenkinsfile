@@ -11,7 +11,7 @@ pipeline {
         stage('Load env variables') {
             steps{
                 load "/var/lib/jenkins/envs/crm-staging.groovy"
-                
+                echo "${env.BRANCH_NAME}"
             }
         }
 
