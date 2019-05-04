@@ -84,7 +84,7 @@ pipeline {
         }
         stage('Clean up') {
             steps{
-                echo "Stop all containers "
+                echo "Stop all containers"
                 sh "docker stop \$(docker ps -a -q)"
             }
         }
