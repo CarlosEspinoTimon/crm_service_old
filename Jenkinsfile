@@ -66,7 +66,7 @@ pipeline {
                 sh "echo \"\$(tail -n +2 requirements.txt)\" > requirements.txt"
                 echo "Deploy"
                 // sh """ 
-                //     #!/bin/bash 
+                //     #!/bin/bash
                 //     echo "Deploy stage";
                 //     curl -o /tmp/google-cloud-sdk.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-225.0.0-linux-x86_64.tar.gz;
                 //     tar -xvf /tmp/google-cloud-sdk.tar.gz -C /tmp/;
