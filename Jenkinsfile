@@ -12,6 +12,9 @@ pipeline {
                         echo "YESS"
                     }
                 }
+            steps{
+                echo "noo"
+            }
         }
         
         stage('Load env variables') {
