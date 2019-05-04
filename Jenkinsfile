@@ -23,10 +23,7 @@ pipeline {
                 echo "Execute initial dump script"
                 sh "mysql -u root -h 127.0.0.1  -proot_super_password < initial_dump_test.sql"
                 echo "Running tests..."
-                sh "docker ps"
                 sh "docker exec -i crm_pipeline_crm_backend_1 pipenv run python tests.py"
-                echo "Stop all containers "
-                sh "docker stop \$(docker ps -a -q)"
             }
         }
 
@@ -62,7 +59,8 @@ pipeline {
                     
                 }
                 echo "Generate requirements.txt"
-                // GENERAR TXT
+                sh "docker exec -i crm_pipeline_crm_backend_1 pipenv lock -r > requirements.txt"
+                sh "echo \"gunicorn==19.9.0\" >> requirements.txt"
                 echo "Deploy"
                 sh """
                     #!/bin/bash 
@@ -82,6 +80,12 @@ pipeline {
                     echo "Deployed to GCP"
                 """
 
+            }
+        }
+        stage('Clean up') {
+            steps{
+                echo "Stop all containers "
+                sh "docker stop \$(docker ps -a -q)"
             }
         }
 
