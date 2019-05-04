@@ -64,7 +64,7 @@ pipeline {
                 sh "echo \"gunicorn==19.3.0\" >> requirements.txt"
                 sh "cat requirements.txt"
                 echo "Remove first line"
-                sh "echo \"$(tail -n +2 requirements.txt)\" > requirements.txt"
+                sh "echo \"\$(tail -n +2 requirements.txt)\" > requirements.txt"
                 sh "cat requirements.txt"
                 echo "Deploy"
                 // sh """
