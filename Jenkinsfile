@@ -45,7 +45,7 @@ pipeline {
         stage('Deploy to GCP') {
             // when {
             //     // branch "master" 
-            //     env.BRANCH_NAME == "master"   
+            //     env.BRANCH_NAME == "master" 
             // } 
             steps{
                 echo "Modify yaml"
