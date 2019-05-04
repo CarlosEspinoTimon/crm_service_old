@@ -53,6 +53,10 @@ and install the module:
 ## Running the tests
 To run the test you have to change the `FLASK_APP=server:create_app('config.Dev')` to `FLASK_APP=server:create_app('config.Test')` in the `.env` file.
 
+Then, start it:
+
+`[sudo] docker-compose up`
+
 Then you have to access the container:
 
 `[sudo] docker exec -it $([sudo] docker ps | grep "crm_backend" | awk '{ print $1 }') bash`
@@ -72,7 +76,7 @@ To generate the latest `requirements.txt`, you have to get into the container:
 
 and generate the file:
 
-`pipenv lock -r > requirements.txt`
+`pipenv lock -r >  requirements.txt`
 
 it is also needed the gunicorn module:
 
