@@ -10,10 +10,6 @@ pipeline {
         stage('Load env variables') {
             steps{
                 load "/var/lib/jenkins/envs/crm-staging.groovy"
-                // checkout scm
-
-                // echo "branch: ${env.GIT_BRANCH}"
-                // sh 'printenv'
                 
             }
         }
@@ -24,27 +20,11 @@ pipeline {
                 sh "docker-compose -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml build"
                 sh "docker-compose -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml up -d"
                 echo "Execute initial dump script"
-                sh "mysql -u root -h 127.0.0.1  -proot_super_password < initial_dump_test.sql"
+                sh "mysql -u root -h 127.0.0.1 -proot_super_password -D test_crm < initial_dump_test.sql"
                 echo "Running tests..."
                 sh "docker exec -i crm_pipeline_crm_backend_1 pipenv run python tests.py"
             }
         }
-
-        // stage('Change yaml') {
-        //     steps{
-        //         script {
-        //             sh """sed -i "s*PRODUCTION_DATABASE_URI*${env.DATABASE_URI}*g" /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"""
-        //             sh """sed -i "s*YOUR_GOOGLE_LOGIN_CLIENT_ID*${env.GOOGLE_LOGIN_CLIENT_ID}*g" /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"""
-        //             sh """sed -i "s*YOUR_GOOGLE_LOGIN_CLIENT_SECRET*${env.GOOGLE_LOGIN_CLIENT_SECRET}*g" /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"""
-        //             sh """sed -i "s*YOUR_GOOGLE_APPLICATION_CREDENTIALS*${env.GOOGLE_APPLICATION_CREDENTIALS}*g" /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"""
-        //             sh """sed -i "s*YOUR_GOOGLE_PROJECT*${env.GOOGLE_PROJECT}*g" /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"""
-        //             sh """sed -i "s*YOUR_GOOGLE_BUCKET*${env.GOOGLE_BUCKET}*g" /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"""
-        //             sh "cat /var/lib/jenkins/workspace/crm_pipeline/backend/app.yaml"
-                    
-        //         }
-
-        //     }
-        // }
       
         stage('Deploy to GCP') {
 
@@ -97,10 +77,10 @@ pipeline {
             steps{
                 echo "Stop all containers"
                 sh "docker stop \$(docker ps -a -q)"
-                // echo "Delete all containers"
-                // sh "docker rm \$(docker ps -a -q)"
-                // echo "Delete all images"
-                // sh "docker rmi \$(docker images -q)"
+                echo "Delete all containers"
+                sh "docker rm \$(docker ps -a -q)"
+                echo "Delete all images"
+                sh "docker rmi \$(docker images -q)"
             }
         }
 
