@@ -20,7 +20,7 @@ pipeline {
                 sh "docker-compose -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml build"
                 sh "docker-compose -f /var/lib/jenkins/workspace/crm_pipeline/docker-compose.yaml up -d"
                 echo "Execute initial dump script"
-                sh "mysql -u root -h 127.0.0.1  -proot_super_password < initial_dump_test.sql"
+                sh "mysql -u root -h 127.0.0.1 -proot_super_password -D test_crm < initial_dump_test.sql"
                 echo "Running tests..."
                 sh "docker exec -i crm_pipeline_crm_backend_1 pipenv run python tests.py"
             }
@@ -77,10 +77,10 @@ pipeline {
             steps{
                 echo "Stop all containers"
                 sh "docker stop \$(docker ps -a -q)"
-                // echo "Delete all containers"
-                // sh "docker rm \$(docker ps -a -q)"
-                // echo "Delete all images"
-                // sh "docker rmi \$(docker images -q)"
+                echo "Delete all containers"
+                sh "docker rm \$(docker ps -a -q)"
+                echo "Delete all images"
+                sh "docker rmi \$(docker images -q)"
             }
         }
 
