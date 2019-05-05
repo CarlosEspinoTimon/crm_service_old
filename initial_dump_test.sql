@@ -1,4 +1,3 @@
-USE test_crm;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(45) DEFAULT NULL,

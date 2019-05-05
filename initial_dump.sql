@@ -1,4 +1,3 @@
-USE crm_db;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(45) DEFAULT NULL,
@@ -13,9 +12,6 @@ CREATE TABLE `users` (
   KEY `fk_users_1_idx` (`admin_privileges_by`),
   CONSTRAINT `fk_users_1` FOREIGN KEY (`admin_privileges_by`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
-
-
-INSERT INTO `users` VALUES (1,'YOUREMAIL@EMAIL.COM',1,1,'2019-04-26 16:42:11',1,'2019-04-26 16:48:22',1);
 
 
 CREATE TABLE `customers` (
