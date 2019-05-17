@@ -5,14 +5,14 @@ from flask_cors import CORS, cross_origin
 
 import config
 
-from sqlalchemy import create_engine, MetaData, Table
-from sqlalchemy.orm import sessionmaker
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 import sys
 
 
-
+db = SQLAlchemy()
+migrate = Migrate()
 
 def create_app(app_config='config.Config'):
     # create and configure the app
@@ -21,25 +21,18 @@ def create_app(app_config='config.Config'):
 
     CORS(app)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = app.config['DATABASE_URI']
-    db = SQLAlchemy(app)
-    app.db = db
+    db.init_app(app)
+    migrate.init_app(app, db)
     
-    app.engine = create_engine(app.config['DATABASE_URI'], pool_pre_ping=True)
-    app.metadata = MetaData(bind=app.engine)
-    app.Session = sessionmaker(bind=app.engine)
-
-
-    from server.helpers.db_helper import get_table
     from server.models.user import User
 
-  
        
     # A simple page that says server status
     @app.route('/')
     @cross_origin()
     def home():
         return jsonify('The server is running!!')
+    
     
     # Import the blueprints
     from .users import users
@@ -49,8 +42,7 @@ def create_app(app_config='config.Config'):
     from .admin import admin
     app.register_blueprint(admin.admin)
     
-
-   
+    
     return app
 
 

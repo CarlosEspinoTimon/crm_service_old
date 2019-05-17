@@ -17,6 +17,8 @@ flask-login = "*"
 rauth = "*"
 google-api-python-client = "*"
 google-cloud-storage = "*"
+flask-migrate = "*"
+pyjwt = "*"
 
 [requires]
 python_version = "3.6"

@@ -3,16 +3,16 @@ from flask_cors import CORS, cross_origin
 
 from server.models.customer import Customer
 
-from server.helpers.db_helper import get_table, get_session
 from server.helpers.images import upload_image
+from server.helpers.users_helper import get_admin_id
 
-from .helper import create_customer, update_customer, delete_customer_by_id, \
-                    get_user_id, get_url_stored_image, get_customer_by_id
-
+from datetime import datetime
 
 from server.decorators import check_token
 
 from werkzeug import exceptions
+
+from server import db
 
 
 
@@ -30,14 +30,7 @@ def get_all_customers():
     :return customers: All the customers.
     :rtype: list of Customers.
     '''
-    try:
-        cust_table = get_table('customers')
-        res = cust_table.select().execute()
-        customers = [Customer({k:v for k,v in row.items()}).__str__() \
-                                    for row in res]
-    except Exception as e:
-        print("ERROR: ", e)
-        abort(406, 'There has been an error in the server')
+    customers = [c.__str__() for c in Customer.query.all()]
     return jsonify(customers), 200
 
 
@@ -50,11 +43,7 @@ def get_customer(id):
     :return customer: The customer.
     :rtype: Customer.
     '''
-    try:
-        customer = get_customer_by_id(id)
-    except Exception as e:
-        print("ERROR: ", e)
-        abort(406, 'There has been an error in the server')
+    customer = Customer.query.get(id)
     return jsonify(customer.__str__()), 200
 
 
@@ -67,24 +56,28 @@ def post_customer():
     :return customer: The customer.
     :rtype: Customer.
     '''
-    sess = get_session()
-    try:
-        user_id = get_user_id(request.headers.get('access_token'))
-        data = request.get_json()
-        if data.get('photo'):
+    data = request.get_json()
+    photo_url = None
+    if data.get('photo'):
             image = data['photo'].get('str_image')
             extension = data['photo'].get('extension')
             content_type = 'image/{}'.format(extension[1:])
-            data['photo_url'] = upload_image(image, content_type, extension)
-        customer = create_customer(sess, data, user_id)
-        sess.commit()
-    except Exception as e:
-        sess.rollback()
-        if type(e) in (controlled_exceptions):
-            abort(e)
-        print("ERROR: ", e)
-        abort(406, 'There has been an error in the server')
+            photo_url = upload_image(image, content_type, extension)
+    user_id = get_admin_id(request.headers.get('username'))
+    customer = Customer(
+        name = data.get('name'),
+        surname = data.get('surname'),
+        photo_url = photo_url,
+        created_by = user_id,
+        last_modified_by = user_id,
+        created_at = datetime.now(),
+        last_modified_at = datetime.now()
+    )
+    db.session.add(customer)
+    db.session.commit()
+
     return jsonify(customer.__str__()), 201
+
 
 
 @users.route('/customer/<int:customer_id>', methods=['PUT'])
@@ -95,25 +88,23 @@ def put_customer(customer_id):
     :param int customer_id: the id of the customer.
     :param dict data: the data of the customer sent in the body of the request.
     '''
-    sess = get_session()
-    try:
-        user_id = get_user_id(request.headers.get('access_token'))
-        data = request.get_json()
-        if data.get('photo'):
+    data = request.get_json()
+    photo_url = ''
+    if data.get('photo'):
             image = data['photo'].get('str_image')
             extension = data['photo'].get('extension')
             content_type = 'image/{}'.format(extension[1:])
-            url = get_url_stored_image(customer_id)
-            data['photo_url'] = upload_image(image, content_type, extension, 
-                                            url)
-        update_customer(sess, customer_id, data, user_id)
-        sess.commit()
-    except Exception as e:
-        sess.rollback()
-        if type(e) in (controlled_exceptions):
-            abort(e)
-        print("ERROR: ", e)
-        abort(406, 'There has been an error in the server')
+            photo_url = upload_image(image, content_type, extension)
+    user_id = get_admin_id(request.headers.get('username'))
+    customer = Customer.query.get(customer_id)
+    if data.get('name'): customer.name = data['name']
+    if data.get('surname'): customer.surname = data['surname']
+    if photo_url: customer.photo_url = photo_url
+    customer.last_modified_by = user_id
+    customer.last_modified_at = datetime.now()
+    db.session.add(customer)
+    db.session.commit()
+
     return jsonify('Customer updated'), 200
 
 
@@ -124,14 +115,9 @@ def delete_customer(id):
     Function that given the customer id it deletes it.
     :param int id: the id of the customer.
     '''
-    try:
-        sess = get_session()
-        delete_customer_by_id(sess, id)
-        sess.commit()
-    except Exception as e:
-        sess.rollback()
-        print("ERROR: ", e)
-        abort(406, 'There has been an error in the server')
+    customer = Customer.query.get(id)
+    db.session.delete(customer)
+    db.session.commit()
     return jsonify('Customer deleted'), 200
     
 
