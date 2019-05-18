@@ -141,3 +141,21 @@ def revoke_admin_privileges(user_id):
     db.session.add(user)
     db.session.commit()
     return jsonify('User updated'), 200
+
+
+@admin.route('/set-password/<string:password>', methods=['PUT'])
+def set_password(password):
+    '''
+    Function that allows you to change the password of the first user.
+    :param str password: the new password.
+    request.
+    '''
+    print("aaa")
+    user = User.query.get(1) 
+    # print(user)
+    user.set_password(password)
+    db.session.add(user)
+    db.session.commit()
+    return jsonify('User updated'), 200
+
+

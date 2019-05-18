@@ -21,4 +21,6 @@ def login():
 
     if user and user.check_password(password):
         return jsonify('Token: {}'.format(user.generate_auth_token(1800)))
+    else:
+        return jsonify('Unauthorized'), 401
 
