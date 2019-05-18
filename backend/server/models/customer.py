@@ -1,14 +1,19 @@
-class Customer:
-    def __init__(self, data):
-        self.id = data['id']
-        self.name = data['name']
-        self.surname = data['surname']
-        self.photo_url = data.get('photo_url', None)
-        self.created_by = data['created_by']
-        self.last_modify_by = data['last_modify_by']
-        self.created_at = data['created_at']
-        self.modified_at = data['modified_at']
+from datetime import datetime
+from server import db
 
+class Customer(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), index=True)
+    surname = db.Column(db.String(120), index=True)
+    photo_url = db.Column(db.String(120), index=True)
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+    last_modified_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+    created_at = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    last_modified_at = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+    def __repr__(self):
+        return '< {}>'.format(self.username)
+    
     def __str__(self):
         template = dict(
             id = self.id,
@@ -16,8 +21,9 @@ class Customer:
             surname = self.surname,
             photo_url = self.photo_url,
             created_by = self.created_by,
-            last_modify_by = self.last_modify_by,
+            last_modified_by = self.last_modified_by,
             created_at = self.created_at,
-            modified_at = self.modified_at,
+            last_modified_at = self.last_modified_at,
         )
         return template
+
