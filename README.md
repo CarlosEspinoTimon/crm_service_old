@@ -34,20 +34,42 @@ The server runs by default in development mode. To start it, you have to run:
 
 `[sudo] docker-compose up`
 
-The first time you run the server you have to create the tables and a user in the database. After you run the previous command, you can create them with the `init_database.sh` script. This script must be run with an email as argument, that is going to be the email of the admin user. At the moment, the email `must be` a gmail account for the oauth authentication.
+The first time you run the server you have to create the tables and a user in the database.
 
-Run the command:
+#### Create tables
+After you run the previous command, you can create them with the command:
 
-`sh init_database.sh youremail@gmail.com`
+`make db_upgrade`
+
+This command with generate the tables in the database.
+
+#### Create user
+Then you have to create your user with 
+
+`sh set_user.sh email`
+
+This script must be run with an email as argument, that is going to be the email of the admin user. 
+
+
+#### Set password
+Then you have to make a PUT call to:
+
+ `localhost:5000/admin/set-password/yournewpassword`
+ 
+ This will set the password for the initial user created in the previous step
+
 
 ## Working in the project
-As this project is build in a dockerized environment, the developers have to adapt to work with it.
-#### Install new modules
-The modules have to be installed in the server that is inside the container, so if a developer needs to install a new module, it must be installed with the following command:
+As this project is build in a dockerized environment, the developers have to adapt to work with it. There is a Makefile that helps them, you can open the file to see what can be done with the Makefile, for example to get into the container of the server by running: 
 
-`[sudo] docker exec -t $([sudo] docker ps | grep "crm_backend" | awk '{ print $1 }') pipenv install MODULE-NAME [--dev]`
+`make access_container`
 
-This will install the module in the container and it will be added to the Pipfile which is shared with the host and tracked in the repository.
+Or install new modules:
+
+`make install_module module='NAME OF THE MODULE'`
+
+This project uses the Flask extension [Flask-Migrate](https://github.com/miguelgrinberg/flask-migrate), a Flask wrapper for Alembic, a database migration framework for SQLAlchemy. You can find info about it's usage in the link.
+
 
 ### Running the tests
 The test are run in a test database, so the first time, you have to create the tables an a user for the tests. There is a script that does this, so you can just run:
